@@ -9,6 +9,8 @@ if (!isset($_SESSION['username'])) {
 
 include "db.php";
 
+$error = "";
+
 if (isset($_POST['submit'])) {
 
     $id = $_POST['id'];
@@ -23,16 +25,35 @@ if (isset($_POST['submit'])) {
     $joining_date = $_POST['joining_date'];
     $address = $_POST['address'];
 
-    $sql = "INSERT INTO employees
-    (id, name, email, phone, gender, date_of_birth, department, designation, salary, joining_date, address)
-    VALUES
-    ('$id', '$name', '$email', '$phone', '$gender', '$date_of_birth', '$department', '$designation', '$salary', '$joining_date', '$address')";
-
-    if (mysqli_query($conn, $sql)) {
-        header("Location: employees.php");
-        exit();
+    if (!is_numeric($id)) {
+        $error = "Employee ID must be a number.";
+    } elseif (!preg_match("/^[0-9]{10}$/", $phone)) {
+        $error = "Phone number must contain exactly 10 digits.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid email address.";
+    } elseif ($salary != "" && $salary < 0) {
+        $error = "Salary cannot be negative.";
     } else {
-        echo "Error: " . mysqli_error($conn);
+
+        $check = "SELECT id FROM employees WHERE id='$id'";
+        $check_result = mysqli_query($conn, $check);
+
+        if (mysqli_num_rows($check_result) > 0) {
+            $error = "Employee ID already exists.";
+        } else {
+
+            $sql = "INSERT INTO employees
+            (id, name, email, phone, gender, date_of_birth, department, designation, salary, joining_date, address)
+            VALUES
+            ('$id', '$name', '$email', '$phone', '$gender', '$date_of_birth', '$department', '$designation', '$salary', '$joining_date', '$address')";
+
+            if (mysqli_query($conn, $sql)) {
+                header("Location: employees.php");
+                exit();
+            } else {
+                $error = "Error: " . mysqli_error($conn);
+            }
+        }
     }
 }
 
@@ -49,6 +70,14 @@ if (isset($_POST['submit'])) {
 
 <h1>Add Employee</h1>
 
+<?php
+
+if ($error != "") {
+    echo "<p>$error</p>";
+}
+
+?>
+
 <form method="POST">
 
     <label>ID:</label>
@@ -61,7 +90,7 @@ if (isset($_POST['submit'])) {
     <input type="email" name="email" required>
 
     <label>Phone:</label>
-    <input type="text" name="phone" required>
+    <input type="text" name="phone" maxlength="10" required>
 
     <label>Gender:</label>
     <select name="gender">
@@ -80,7 +109,7 @@ if (isset($_POST['submit'])) {
     <input type="text" name="designation">
 
     <label>Salary:</label>
-    <input type="number" name="salary">
+    <input type="number" name="salary" min="0">
 
     <label>Joining Date:</label>
     <input type="date" name="joining_date">
