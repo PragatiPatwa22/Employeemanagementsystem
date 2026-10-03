@@ -78,6 +78,7 @@ if (isset($_POST['update'])) {
     <a href="dashboard.php">Dashboard</a>
     <a href="employees.php">Employees</a>
     <a href="add_employee.php">Add Employee</a>
+    <a href="change_password.php">Change Password</a>
     <a href="logout.php">Logout</a>
 </div>
 
