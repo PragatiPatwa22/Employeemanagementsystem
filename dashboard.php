@@ -15,6 +15,14 @@ $row = mysqli_fetch_assoc($result);
 
 $total_employees = $row['total'];
 
+$department_sql = "SELECT department, COUNT(*) AS total
+                   FROM employees
+                   WHERE department IS NOT NULL
+                   AND department != ''
+                   GROUP BY department";
+
+$department_result = mysqli_query($conn, $department_sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +48,26 @@ $total_employees = $row['total'];
     <tr>
         <td><?php echo $total_employees; ?></td>
     </tr>
+</table>
+
+<h2>Employees by Department</h2>
+
+<table>
+
+    <tr>
+        <th>Department</th>
+        <th>Total Employees</th>
+    </tr>
+
+    <?php while ($department = mysqli_fetch_assoc($department_result)) { ?>
+
+    <tr>
+        <td><?php echo $department['department']; ?></td>
+        <td><?php echo $department['total']; ?></td>
+    </tr>
+
+    <?php } ?>
+
 </table>
 
 <p>
