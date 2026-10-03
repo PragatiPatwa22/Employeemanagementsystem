@@ -10,10 +10,15 @@ if (!isset($_SESSION['username'])) {
 include "db.php";
 
 $id = $_GET['id'];
+$error = "";
 
 $sql = "SELECT * FROM employees WHERE id = $id";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
+
+if (!$row) {
+    die("Employee not found");
+}
 
 if (isset($_POST['update'])) {
 
@@ -28,24 +33,33 @@ if (isset($_POST['update'])) {
     $joining_date = $_POST['joining_date'];
     $address = $_POST['address'];
 
-    $sql = "UPDATE employees SET
-        name='$name',
-        email='$email',
-        phone='$phone',
-        gender='$gender',
-        date_of_birth='$date_of_birth',
-        department='$department',
-        designation='$designation',
-        salary='$salary',
-        joining_date='$joining_date',
-        address='$address'
-        WHERE id=$id";
-
-    if (mysqli_query($conn, $sql)) {
-        header("Location: employees.php");
-        exit();
+    if (!preg_match("/^[0-9]{10}$/", $phone)) {
+        $error = "Phone number must contain exactly 10 digits.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid email address.";
+    } elseif ($salary != "" && $salary < 0) {
+        $error = "Salary cannot be negative.";
     } else {
-        echo "Error: " . mysqli_error($conn);
+
+        $sql = "UPDATE employees SET
+            name='$name',
+            email='$email',
+            phone='$phone',
+            gender='$gender',
+            date_of_birth='$date_of_birth',
+            department='$department',
+            designation='$designation',
+            salary='$salary',
+            joining_date='$joining_date',
+            address='$address'
+            WHERE id=$id";
+
+        if (mysqli_query($conn, $sql)) {
+            header("Location: employees.php");
+            exit();
+        } else {
+            $error = "Error: " . mysqli_error($conn);
+        }
     }
 }
 
@@ -62,6 +76,14 @@ if (isset($_POST['update'])) {
 
 <h1>Edit Employee</h1>
 
+<?php
+
+if ($error != "") {
+    echo "<p>$error</p>";
+}
+
+?>
+
 <form method="POST">
 
     <label>Name:</label>
@@ -71,7 +93,7 @@ if (isset($_POST['update'])) {
     <input type="email" name="email" value="<?php echo $row['email']; ?>" required>
 
     <label>Phone:</label>
-    <input type="text" name="phone" value="<?php echo $row['phone']; ?>" required>
+    <input type="text" name="phone" value="<?php echo $row['phone']; ?>" maxlength="10" required>
 
     <label>Gender:</label>
     <select name="gender">
@@ -90,7 +112,7 @@ if (isset($_POST['update'])) {
     <input type="text" name="designation" value="<?php echo $row['designation']; ?>">
 
     <label>Salary:</label>
-    <input type="number" name="salary" value="<?php echo $row['salary']; ?>">
+    <input type="number" name="salary" value="<?php echo $row['salary']; ?>" min="0">
 
     <label>Joining Date:</label>
     <input type="date" name="joining_date" value="<?php echo $row['joining_date']; ?>">
