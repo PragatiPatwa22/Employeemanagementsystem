@@ -1,36 +1,59 @@
+<?php
+
+session_start();
+
+if (isset($_SESSION['username'])) {
+    header("Location: employees.php");
+    exit();
+}
+
+if (isset($_POST['login'])) {
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    if ($username == "admin" && $password == "1234") {
+        $_SESSION['username'] = $username;
+       header("Location: dashboard.php");
+        exit();
+    } else {
+        $error = "Invalid username or password";
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Management System</title>
+    <title>Employee Management System - Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h2>Employee Management System</h2>
+<h1>Employee Management System</h1>
 
-<form method="POST" action="login.php">
+<h2>Login</h2>
 
-    <label>Username:</label><br>
-    <input type="text" name="username" required><br><br>
+<form method="POST">
 
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
+    <label>Username:</label>
+    <input type="text" name="username" required>
+
+    <label>Password:</label>
+    <input type="password" name="password" required>
 
     <input type="submit" name="login" value="Login">
 
 </form>
 
 <?php
-if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
 
-    if ($username == "admin" && $password == "1234") {
-        header("Location: dashboard.php");
-        exit();
-    } else {
-        echo "<p>Invalid username or password</p>";
-    }
+if (isset($error)) {
+    echo "<p>$error</p>";
 }
+
 ?>
 
 </body>
