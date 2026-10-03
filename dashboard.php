@@ -34,6 +34,13 @@ $department_result = mysqli_query($conn, $department_sql);
 
 <body>
 
+<div class="navbar">
+    <a href="dashboard.php">Dashboard</a>
+    <a href="employees.php">Employees</a>
+    <a href="add_employee.php">Add Employee</a>
+    <a href="logout.php">Logout</a>
+</div>
+
 <h1>Employee Management System</h1>
 
 <h2>Dashboard</h2>
@@ -69,18 +76,6 @@ $department_result = mysqli_query($conn, $department_sql);
     <?php } ?>
 
 </table>
-
-<p>
-    <a href="employees.php">View Employees</a>
-</p>
-
-<p>
-    <a href="add_employee.php">Add Employee</a>
-</p>
-
-<p>
-    <a href="logout.php">Logout</a>
-</p>
 
 </body>
 </html>

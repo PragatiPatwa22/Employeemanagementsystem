@@ -35,15 +35,16 @@ $result = mysqli_query($conn, $sql);
 
 <body>
 
+<div class="navbar">
+    <a href="dashboard.php">Dashboard</a>
+    <a href="employees.php">Employees</a>
+    <a href="add_employee.php">Add Employee</a>
+    <a href="logout.php">Logout</a>
+</div>
+
 <h1>Employee Management System</h1>
 
 <p>Welcome, <?php echo $_SESSION['username']; ?></p>
-
-<p>
-    <a href="dashboard.php">Dashboard</a> |
-    <a href="add_employee.php">Add Employee</a> |
-    <a href="logout.php">Logout</a>
-</p>
 
 <form method="GET">
 

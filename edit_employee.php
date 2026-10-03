@@ -74,6 +74,13 @@ if (isset($_POST['update'])) {
 
 <body>
 
+<div class="navbar">
+    <a href="dashboard.php">Dashboard</a>
+    <a href="employees.php">Employees</a>
+    <a href="add_employee.php">Add Employee</a>
+    <a href="logout.php">Logout</a>
+</div>
+
 <h1>Edit Employee</h1>
 
 <?php
@@ -123,10 +130,6 @@ if ($error != "") {
     <input type="submit" name="update" value="Update Employee">
 
 </form>
-
-<p>
-    <a href="employees.php">Back to Employee List</a>
-</p>
 
 </body>
 </html>
