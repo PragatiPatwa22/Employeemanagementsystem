@@ -9,7 +9,19 @@ if (!isset($_SESSION['username'])) {
 
 include "db.php";
 
-$sql = "SELECT * FROM employees";
+$search = "";
+
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
+}
+
+$sql = "SELECT * FROM employees
+        WHERE id LIKE '%$search%'
+        OR name LIKE '%$search%'
+        OR email LIKE '%$search%'
+        OR phone LIKE '%$search%'
+        OR department LIKE '%$search%'";
+
 $result = mysqli_query($conn, $sql);
 
 ?>
@@ -28,11 +40,21 @@ $result = mysqli_query($conn, $sql);
 <p>Welcome, <?php echo $_SESSION['username']; ?></p>
 
 <p>
+    <a href="dashboard.php">Dashboard</a> |
     <a href="add_employee.php">Add Employee</a> |
     <a href="logout.php">Logout</a>
 </p>
 
+<form method="GET">
+
+    <input type="text" name="search" placeholder="Search employee..." value="<?php echo $search; ?>">
+
+    <input type="submit" value="Search">
+
+</form>
+
 <table>
+
     <tr>
         <th>ID</th>
         <th>Name</th>
@@ -51,6 +73,7 @@ $result = mysqli_query($conn, $sql);
     <?php while ($row = mysqli_fetch_assoc($result)) { ?>
 
     <tr>
+
         <td><?php echo $row['id']; ?></td>
         <td><?php echo $row['name']; ?></td>
         <td><?php echo $row['email']; ?></td>
@@ -68,6 +91,7 @@ $result = mysqli_query($conn, $sql);
             |
             <a href="delete_employee.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this employee?')">Delete</a>
         </td>
+
     </tr>
 
     <?php } ?>
